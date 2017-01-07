@@ -1,6 +1,7 @@
 package com.itinapi.dao;
 
 import com.itinapi.itinerary.Destination;
+import com.itinapi.itinerary.ItineraryException;
 import com.itinapi.itinerary.Location;
 import com.itinapi.itinerary.Route;
 
@@ -52,13 +53,17 @@ public class OpenFlightsDAO {
             populate(statement, airportCodes, 0);
             //System.out.println("OpenFlightsDAO updateLocations before executeQuery");
             resultSet = statement.executeQuery();
+            int count = 0;
             while (resultSet.next()) {
                 Destination destination = destMap.get(resultSet.getString(1));
                 destination.getLocation().setName(resultSet.getString(2));
                 destination.getLocation().setX(resultSet.getDouble(3));
                 destination.getLocation().setY(resultSet.getDouble(4));
+                count++;
             }
-            //System.out.println("OpenFlightsDAO updateLocations end");
+            if (count != destinations.size()) {
+                throw new ItineraryException(2, "Request contains invalid location(s)");
+            }
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());
         } finally {
@@ -75,7 +80,6 @@ public class OpenFlightsDAO {
             statement = connection.prepareStatement(SQL_GET_ROUTES);
             populate(statement, airportCodes, 0);
             populate(statement, airportCodes, DEST_LIMIT);
-            //System.out.println("OpenFlightsDAO numFlights before executeQuery");
             resultSet = statement.executeQuery();
             List<Route> routes = new ArrayList<Route>();
             while (resultSet.next()) {
@@ -83,7 +87,6 @@ public class OpenFlightsDAO {
                         resultSet.getDouble(3), resultSet.getInt(4));
                 routes.add(route);
             }
-            //System.out.println("OpenFlightsDAO numFlights end");
             return routes;
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());

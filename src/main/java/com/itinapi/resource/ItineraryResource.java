@@ -28,6 +28,7 @@ public class ItineraryResource {
             daoFactory = DAOFactory.getInstance();
         } catch (NamingException e) {
             System.err.println(e.getMessage());
+            throw new ItineraryException(1,e.getMessage());
         }
         openFlightsDAO = new OpenFlightsDAO(daoFactory);
     }
@@ -37,7 +38,7 @@ public class ItineraryResource {
     }
 
     @POST
-    public Itinerary create(Itinerary itinerary) throws NamingException {
+    public Itinerary create(Itinerary itinerary) throws ItineraryException {
         setItinerary(itinerary);
         List<String> airportCodes = new ArrayList<String>();
         for (Destination destination : this.itinerary.getDestinations()) {
