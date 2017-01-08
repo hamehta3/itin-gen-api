@@ -145,7 +145,7 @@ public class Graph {
             segment.setTo(to);
 
             // FIXME. Horrible estimate upon horrible estimate = horrible^2 estimate :|
-            segment.setCost(new Cost(3.0*costMatrix[i-1][i], currency));
+            segment.setCost(new Cost(4.0*costMatrix[i-1][i], currency));
             segment.setDistance(distMatrix[i-1][i]);
 
             if (prevMatrix[i-1][i] != -1) {
