@@ -35,9 +35,6 @@ public class Graph {
         initDistances();
 
         allPairsShortestPaths();
-
-        //print(costMatrix);
-        //printRoutes();
     }
 
     private void initMatrix() {
@@ -120,7 +117,7 @@ public class Graph {
     private void checkRoute(int [] currRoute) {
         int cost = 0;
         for (int i=1; i<currRoute.length; i++) {
-            cost += costMatrix[i-1][i];
+            cost += costMatrix[currRoute[i-1]][currRoute[i]];
         }
         if (cost < shortestRouteCost) {
             shortestRouteCost = cost;
@@ -136,6 +133,8 @@ public class Graph {
         }
         permuteRoutes(route,0);
         for (int i=1; i<shortestRoute.length; i++) {
+            int fromVertex = shortestRoute[i-1];
+            int toVertex = shortestRoute[i];
             Segment segment = new Segment();
             Location from = new Location();
             from.setName(vertexIataMap.get(shortestRoute[i-1]));
@@ -145,17 +144,17 @@ public class Graph {
             segment.setTo(to);
 
             // FIXME. Horrible estimate upon horrible estimate = horrible^2 estimate :|
-            segment.setCost(new Cost(4.0*costMatrix[i-1][i], currency));
-            segment.setDistance(distMatrix[i-1][i]);
+            segment.setCost(new Cost(4.0*costMatrix[fromVertex][toVertex], currency));
+            segment.setDistance(distMatrix[fromVertex][toVertex]);
 
-            if (prevMatrix[i-1][i] != -1) {
+            if (prevMatrix[fromVertex][toVertex] != -1) {
                 Location stopover = new Location();
-                stopover.setName(vertexIataMap.get(prevMatrix[i-1][i]));
+                stopover.setName(vertexIataMap.get(prevMatrix[fromVertex][toVertex]));
                 segment.setStopover(stopover);
                 // override distance
                 segment.setDistance(
-                        distMatrix[i-1][prevMatrix[i-1][i]] +
-                        distMatrix[prevMatrix[i-1][i]][i]
+                        distMatrix[fromVertex][prevMatrix[fromVertex][toVertex]] +
+                        distMatrix[prevMatrix[fromVertex][toVertex]][toVertex]
                 );
             }
             segments.add(segment);
