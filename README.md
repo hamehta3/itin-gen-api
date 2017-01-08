@@ -1,5 +1,7 @@
 # itin-gen-api
-An API to generate an optimal itinerary from a list of destinations
+An API to generate an optimal itinerary from a list of destinations.
+
+Currently it uses some naive heuristics to determine optimum costs - i.e. number of flights between a pair of cities and distance. This is an ongoing project, so suggestions and feedback are always welcome!
 
 ### Install
 Requires MySQL. Scripts to load data are under src/main/sql/.
@@ -58,35 +60,39 @@ Sample call with data:
 Sample response:
 ```json
       ...
-      "segments":[
+      "segments": [
         {
-          "cost":{"amount": 108, "currency": "USD"},
-          "distance": 748,
+          "cost":{"amount": 60, "currency": "USD"},
+          "distance": 534,
           "from":{"name": "BCN"},
-          "to":{"name": "FRA"}
-        },
-        {
-          "cost":{"amount": 44, "currency": "USD"},
-          "distance": 304,
-          "from":{"name": "FRA"},
-          "to":{"name": "AMS"}
+          "to":{"name": "CDG"}
         },
         {
           "cost":{"amount": 52, "currency": "USD"},
           "distance": 274,
+          "from":{"name": "CDG"},
+          "to":{"name": "AMS"}
+        },
+        {
+          "cost":{"amount": 44, "currency": "USD"},
+          "distance": 304,
           "from":{"name": "AMS"},
-          "to":{"name": "CDG"}
+          "to":{"name": "FRA"}
         }
       ],
       "totalCost": {
-        "amount": 204,
+        "amount": 156,
         "currency": "USD"
       }
   ```
 
 
-### TODO
-Tests, integrate with actual pricing service
+### TODO and caveats
+* Integrate with actual pricing service
+* Optimize algorithm; use more clever heuristics over naive TSP
+* No support for origin and final destinations yet
+* Currently (only) one stopover supported - handle transit more smartly
+* Tests - coming soon
 
 ### Credits
 Flight, airport, and airline data obtained from [openflights](https://github.com/jpatokal/openflights)
